@@ -2,16 +2,7 @@ import { useState, useEffect } from "react";
 import { login } from "../../services/operations/AuthApi";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-
-interface LoginFormProps {
-  isLogin: boolean;
-  setIsLogin: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
-interface FormData {
-  email: string;
-  password: string;
-}
+import { LoginFormProps, FormData } from "../Types/types";
 
 const LoginForm: React.FC<LoginFormProps> = ({ isLogin, setIsLogin }) => {
   const navigate = useNavigate();

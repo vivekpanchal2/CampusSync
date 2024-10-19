@@ -1,5 +1,7 @@
 const prisma = require("../config/database.js");
 const { uploadImageToCloudinary } = require("../utils/imageUpload");
+const { generateMembershipCard } = require("../utils/generateCards.js");
+const { v4: uuidv4 } = require("uuid");
 
 exports.createClub = async (req, res) => {
   try {
@@ -93,7 +95,12 @@ exports.createClub = async (req, res) => {
 exports.getClubById = async (req, res) => {
   const { id } = req.params;
 
-  console.log(id);
+  if (!id) {
+    return res.status(400).json({
+      success: true,
+      message: "Club id is missing",
+    });
+  }
 
   try {
     const club = await prisma.club.findUnique({
@@ -101,6 +108,29 @@ exports.getClubById = async (req, res) => {
       include: {
         testimonials: true,
         gallery: true,
+        memberships: {
+          select: {
+            userId: true,
+          },
+        },
+        events: {
+          take: 3,
+          orderBy: {
+            timeDate: "asc",
+          },
+          select: {
+            name: true,
+            timeDate: true,
+            image: true,
+            studentsLimit: true,
+            ticketPrice: true,
+            _count: {
+              select: {
+                tickets: true,
+              },
+            },
+          },
+        },
       },
     });
 
@@ -128,15 +158,157 @@ exports.getAllClubs = async (req, res) => {
         president: true,
         _count: {
           select: {
-            members: true,
+            memberships: true,
           },
         },
       },
     });
 
-    res.json(clubs);
+    if (!clubs) {
+      return res.status(400).json({
+        success: false,
+        message: "Club Failed to fetch",
+      });
+    }
+
+    res.status(200).json({ success: true, clubs });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Failed to fetch clubs" });
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+exports.joinClub = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { clubId } = req.body;
+    const user = req.user;
+
+    if (!userId || !clubId) {
+      return res.status(401).json({
+        success: false,
+        message: "User Or Club Not Found",
+      });
+    }
+
+    const isMember = await prisma.clubMembership.findMany({
+      where: {
+        userId: userId,
+        clubId: clubId,
+      },
+    });
+
+    if (isMember.length > 0) {
+      return res.status(401).json({
+        success: false,
+        message: "User already A Member",
+      });
+    }
+
+    const club = await prisma.club.findUnique({
+      where: {
+        id: clubId,
+      },
+      select: {
+        logoUrl: true,
+        name: true,
+      },
+    });
+
+    if (!club) {
+      return res.status(404).json({ error: "Club not found." });
+    }
+
+    const memberId = `CLUB-${clubId.slice(-4)}-${userId.slice(
+      -4
+    )}-${uuidv4().slice(-4)}`;
+
+    let membershipCardUrl;
+    try {
+      membershipCardUrl = await generateMembershipCard(user, memberId, club);
+    } catch (error) {
+      console.error("Error generating membership card:", error);
+      return res
+        .status(500)
+        .json({ error: "Failed to generate membership card." });
+    }
+
+    const membership = await prisma.clubMembership.create({
+      data: {
+        userId,
+        clubId,
+        memberId,
+        memberCardUrl: membershipCardUrl,
+      },
+    });
+
+    res.status(200).json({ success: true, data: membership });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error in MemberCard Download",
+    });
+  }
+};
+
+exports.downloadMembershipCard = async (req, res) => {
+  const { userId, clubId } = req.body;
+
+  const membershipInfo = await prisma.clubMembership.findFirst({
+    where: {
+      userId: userId,
+      clubId: clubId,
+    },
+    select: {
+      memberCardUrl: true,
+    },
+  });
+
+  console.log(membershipInfo);
+
+  if (!membershipInfo) {
+    return res.status(404).json({
+      success: false,
+      message: "Membership Not Found",
+    });
+  }
+
+  return res.status(200).json({
+    success: true,
+    memberCardUrl: membershipInfo.memberCardUrl,
+  });
+};
+
+exports.getJoinedClub = async (req, res) => {
+  const userId = req.user.id;
+
+  try {
+    const joinedClubs = await prisma.clubMembership.findMany({
+      where: {
+        userId: userId,
+      },
+      select: {
+        clubId: true,
+        memberId: true,
+        club: {
+          select: {
+            logoUrl: true,
+            name: true,
+          },
+        },
+      },
+    });
+
+    return res.status(200).json({
+      success: true,
+      joinedClubs,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error in MemberCard Download",
+    });
   }
 };

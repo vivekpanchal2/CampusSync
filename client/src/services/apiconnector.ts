@@ -9,7 +9,8 @@ export const apiConnector = (
   url: string,
   bodyData?: any,
   params?: any,
-  headers?: any
+  headers?: any,
+  responseType?: any
 ): any => {
   return axiosInstance({
     method: method,
@@ -17,6 +18,7 @@ export const apiConnector = (
     data: bodyData || null,
     params: params || null,
     headers: headers || null,
+    responseType,
     withCredentials: true,
   });
 };

@@ -1,3 +1,6 @@
+/server/utils/credentials/
+
+
 # Logs
 logs
 *.log
@@ -8,7 +11,8 @@ lerna-debug.log*
 .pnpm-debug.log*
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
-report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+report.[0-9]*.[0-9]*.[-0-9]*.[0-9]*.json
+
 
 # Runtime data
 pids
@@ -125,6 +129,7 @@ logs
 
 node_modules
 bower_components
+junkFiles
 
 *.sublime*
 

@@ -1,7 +1,9 @@
 const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
+const cookieParser = require("cookie-parser");
 dotenv.config();
+const cleanup = require("./services/cleanup");
 
 const app = express();
 
@@ -11,6 +13,8 @@ const { cloudinaryConnect } = require("./config/cloudinary");
 
 const userRoutes = require("./routes/User");
 const clubRoutes = require("./routes/Club");
+const eventRoutes = require("./routes/Event");
+const adminRoutes = require("./routes/Admin");
 
 app.use(
   cors({
@@ -22,7 +26,7 @@ app.use(
 );
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
+app.use(cookieParser());
 app.use(
   fileUpload({
     useTempFiles: true,
@@ -34,12 +38,8 @@ cloudinaryConnect();
 
 app.use("/api/v1/auth", userRoutes);
 app.use("/api/v1/club", clubRoutes);
-
-app.get("/", (req, res) => {
-  return res.json({
-    success: true,
-  });
-});
+app.use("/api/v1/event", eventRoutes);
+app.use("/api/v1/admin", adminRoutes);
 
 app.listen(PORT, () => {
   console.log(`App is running at ${PORT}`);

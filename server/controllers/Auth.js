@@ -63,7 +63,7 @@ exports.signUp = async (req, res) => {
     };
 
     const token = jwt.sign(payload, process.env.JWT_SECRET, {
-      expiresIn: "2h",
+      expiresIn: "10h",
     });
 
     console.log(token);
@@ -73,6 +73,7 @@ exports.signUp = async (req, res) => {
     const options = {
       expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
       httpOnly: true,
+      sameSite: "None",
     };
 
     res
@@ -134,7 +135,7 @@ exports.login = async (req, res) => {
     };
 
     const token = jwt.sign(payload, process.env.JWT_SECRET, {
-      expiresIn: "2h",
+      expiresIn: "10h",
     });
 
     console.log(token);

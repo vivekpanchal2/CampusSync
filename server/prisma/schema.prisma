@@ -16,7 +16,8 @@ model User {
   profileImage     String?
   role             String
   tickets          Ticket[]
-  clubs            Club[]   @relation("Members")
+  memberships ClubMembership[]
+  createdEvents Event[]   
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
@@ -32,9 +33,9 @@ model Club {
   secretary String
   email     String?   
   phone     String?
+  memberships ClubMembership[]
   testimonials Testimonial[]
   gallery     GalleryImage[]
-  members     User[]   @relation("Members")
   events      Event[]  @relation("ClubEvents")
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -55,20 +56,34 @@ model Testimonial {
   club      Club    @relation(fields: [clubId], references: [id])
 }
 
+model ClubMembership {
+  id          String   @id @default(cuid())
+  user        User     @relation(fields: [userId], references: [id])
+  userId      String
+  club       Club     @relation(fields: [clubId], references: [id])
+  clubId      String
+  memberId    String   @unique
+  memberCardUrl  String  
+  joinedAt    DateTime @default(now())
+}
+
+
 model Event {
   id                  String   @id @default(cuid())
   name                String
   description         String
-  clubId              String 
-  club                Club     @relation(name: "ClubEvents", fields: [clubId], references: [id], onDelete: Cascade)
+  clubId              String? 
+  club                Club?     @relation(name: "ClubEvents", fields: [clubId], references: [id], onDelete: Cascade)
   timeDate            DateTime
   image               String
-  studentsRegistered  String[] 
-  ticketPrice         Float    
-  status              String   
+  studentsLimit       Int 
+  ticketPrice         Float     
+  createdBy           User      @relation(fields: [createdById], references: [id], onDelete: Cascade)
+  createdById         String  
+  venue               String?
   tickets             Ticket[]
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
 }
 
 model Ticket {
@@ -77,6 +92,8 @@ model Ticket {
   userId      String
   event       Event    @relation(fields: [eventId], references: [id])
   eventId     String
+  ticketId    String
+  ticketUrl   String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }

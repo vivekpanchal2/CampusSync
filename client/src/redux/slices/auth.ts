@@ -2,9 +2,11 @@ import { createSlice } from "@reduxjs/toolkit";
 
 interface AuthState {
   user: {
+    id: string;
     name: string;
     email: string;
     profileImage: string;
+    role: string;
   } | null;
   loading: boolean;
   token: string | null;

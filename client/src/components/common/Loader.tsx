@@ -1,8 +1,5 @@
 import React from "react";
-
-interface LoaderProps {
-  loading: boolean;
-}
+import { LoaderProps } from "../Types/types";
 
 const Loader: React.FC<LoaderProps> = ({ loading }) => {
   if (!loading) return null;
