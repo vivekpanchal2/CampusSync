@@ -1,0 +1,100 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               String   @id @default(cuid())
+  collegeEnrollNo  String   @unique
+  name             String
+  email            String   @unique
+  password         String
+  profileImage     String?
+  role             String
+  tickets          Ticket[]
+  memberships ClubMembership[]
+  createdEvents Event[]   
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Club {
+  id          String   @id @default(cuid())
+  name        String
+  description String
+  category    String
+  logoUrl     String
+  president   String
+  vicePresident String
+  secretary String
+  email     String?   
+  phone     String?
+  memberships ClubMembership[]
+  testimonials Testimonial[]
+  gallery     GalleryImage[]
+  events      Event[]  @relation("ClubEvents")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model GalleryImage {
+  id      Int     @id @default(autoincrement())
+  url     String
+  clubId  String
+  club    Club    @relation(fields: [clubId], references: [id]) 
+}
+
+model Testimonial {
+  id        Int     @id @default(autoincrement())
+  content   String
+  author    String
+  clubId    String
+  club      Club    @relation(fields: [clubId], references: [id])
+}
+
+model ClubMembership {
+  id          String   @id @default(cuid())
+  user        User     @relation(fields: [userId], references: [id])
+  userId      String
+  club       Club     @relation(fields: [clubId], references: [id])
+  clubId      String
+  memberId    String   @unique
+  memberCardUrl  String  
+  joinedAt    DateTime @default(now())
+}
+
+
+model Event {
+  id                  String   @id @default(cuid())
+  name                String
+  description         String
+  clubId              String? 
+  club                Club?     @relation(name: "ClubEvents", fields: [clubId], references: [id], onDelete: Cascade)
+  timeDate            DateTime
+  image               String
+  studentsLimit       Int 
+  ticketPrice         Float     
+  createdBy           User      @relation(fields: [createdById], references: [id], onDelete: Cascade)
+  createdById         String  
+  venue               String?
+  tickets             Ticket[]
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+}
+
+model Ticket {
+  id          String   @id @default(cuid())
+  user        User     @relation(fields: [userId], references: [id])
+  userId      String
+  event       Event    @relation(fields: [eventId], references: [id])
+  eventId     String
+  ticketId    String
+  ticketUrl   String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
