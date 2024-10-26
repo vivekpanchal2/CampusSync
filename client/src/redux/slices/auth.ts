@@ -17,7 +17,7 @@ const initialState: AuthState = {
   user: localStorage.getItem("user")
     ? JSON.parse(localStorage.getItem("user") as string)
     : null,
-  loading: true,
+  loading: false,
   token: localStorage.getItem("token")
     ? JSON.parse(localStorage.getItem("token") as string)
     : null,

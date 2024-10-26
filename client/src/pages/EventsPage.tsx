@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import { fetchEvents } from "../services/operations/EventApi";
 import { useDispatch, useSelector } from "react-redux";
 import EventCard from "../components/Events/EventCard";
+import { Link } from "react-router-dom";
 import { MdEvent } from "react-icons/md";
 import Loader from "../components/common/Loader";
 import { RootState } from "../redux/reducers";
 import { Event } from "../components/Types/types";
 import ErrorPage from "./ErrorPage";
-import { format } from "date-fns"; // For date formatting
+import { format } from "date-fns";
 
 const EventsPage: React.FC = () => {
   const [allEvents, setAllEvents] = useState<Event[]>([]);
@@ -53,19 +53,16 @@ const EventsPage: React.FC = () => {
     return <ErrorPage />;
   }
 
-  // Filter logic
   const filteredEvents = allEvents
     .filter((event) =>
       event.name.toLowerCase().includes(searchTerm.toLowerCase())
     )
     .filter((event) => {
-      // Filter by club
       if (selectedClub === "All") return true;
       if (selectedClub === "Other") return event.club === null;
       return event.club?.name === selectedClub;
     })
     .filter((event) => {
-      // Filter by price range
       return (
         event.ticketPrice >= priceRange[0] && event.ticketPrice <= priceRange[1]
       );
@@ -83,9 +80,7 @@ const EventsPage: React.FC = () => {
         </p>
       </div>
 
-      {/* Filter inputs */}
       <div className="mb-8 flex flex-col gap-4">
-        {/* Search by name */}
         <input
           type="text"
           placeholder="Search events..."
@@ -94,7 +89,6 @@ const EventsPage: React.FC = () => {
           className="w-full md:w-1/2 p-3 rounded-md bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
         />
 
-        {/* Club selection */}
         <select
           value={selectedClub}
           onChange={(e) => setSelectedClub(e.target.value)}
@@ -102,9 +96,8 @@ const EventsPage: React.FC = () => {
         >
           <option value="All">All Clubs</option>
           <option value="Other">Other Events</option>
-          {/* Dynamically generate options from event data */}
           {Array.from(new Set(allEvents.map((event) => event.club?.name)))
-            .filter(Boolean) // Remove any undefined values
+            .filter(Boolean)
             .map((clubName) => (
               <option key={clubName} value={clubName}>
                 {clubName}
@@ -112,7 +105,6 @@ const EventsPage: React.FC = () => {
             ))}
         </select>
 
-        {/* Price range */}
         <div className="flex gap-4 items-center">
           <label className="text-white">Ticket Price Range: </label>
           <input
@@ -142,7 +134,6 @@ const EventsPage: React.FC = () => {
         </Link>
       </div>
 
-      {/* Event cards */}
       {filteredEvents.length === 0 ? (
         <p className="text-center text-white text-lg">No events found</p>
       ) : (

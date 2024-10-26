@@ -37,3 +37,11 @@ export const adminEndPoints: { [key: string]: string } = {
   REMOVE_CLUB_MEMBER: BASE_URL + "/admin/removeClubMember",
   DELETE_CLUB_API: BASE_URL + "/admin/deleteClub",
 };
+
+export const postEndPoints: { [key: string]: string } = {
+  CREATE_POST_API: BASE_URL + "/posts/createPost",
+  FETCH_POSTS_API: BASE_URL + "/posts/getPosts",
+  FETCH_MYPOSTS_API: BASE_URL + "/posts/getMyPosts",
+  FETCH_COMMENTS_API: BASE_URL + "/posts/getComments",
+  POST_COMMENT_API: BASE_URL + "/posts/createComment",
+};

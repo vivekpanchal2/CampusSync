@@ -168,3 +168,13 @@ export interface JoinedClub {
     name: string;
   };
 }
+
+export interface Post {
+  id: string;
+  content: string;
+  image: string;
+  user: {
+    name: string;
+  };
+  createdAt: string;
+}

@@ -18,6 +18,8 @@ model User {
   tickets          Ticket[]
   memberships ClubMembership[]
   createdEvents Event[]   
+  posts           Posts[]
+  comments         PostComments[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
@@ -98,3 +100,23 @@ model Ticket {
   updatedAt   DateTime @updatedAt
 }
 
+model Posts{
+  id      String  @id @default(cuid())
+  user  User    @relation(fields: [userId], references: [id])
+  userId String
+  content String 
+  image     String?       
+  createdAt  DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  comments   PostComments[]
+}
+
+model PostComments {
+   id      String  @id @default(cuid())
+  user    User     @relation(fields: [userId], references: [id])
+  userId  String
+  post    Posts    @relation(fields: [postId], references: [id]) 
+  postId  String
+  content String 
+  createdAt  DateTime @default(now())
+}

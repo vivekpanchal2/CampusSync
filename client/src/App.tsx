@@ -22,6 +22,9 @@ import JoinedClubs from "./components/Dashboard/JoinedClubs";
 import ClubFullDetails from "./pages/Admin/ClubFullDetails";
 import ProtectedRoute from "./components/Auth/ProtectedRoute";
 import NotFoundPage from "./components/common/NotFoundPage";
+import PostsPage from "./pages/PostsPage";
+import CreatePostPage from "./components/Posts/CreatePost";
+import MyPostsPage from "./components/Dashboard/myPosts";
 
 const App: React.FC = () => {
   return (
@@ -64,6 +67,7 @@ const App: React.FC = () => {
           <Route path="enrolled" element={<EnrollEvents />} />
           <Route path="hosted" element={<HostedEvents />} />
           <Route path="clubs" element={<JoinedClubs />} />
+          <Route path="posts" element={<MyPostsPage />} />
         </Route>
 
         {/* Admin Routes */}
@@ -109,6 +113,8 @@ const App: React.FC = () => {
         />
 
         <Route path="*" element={<NotFoundPage />} />
+        <Route path="/posts" element={<PostsPage />} />
+        <Route path="/posts/createPost" element={<CreatePostPage />} />
       </Routes>
     </>
   );

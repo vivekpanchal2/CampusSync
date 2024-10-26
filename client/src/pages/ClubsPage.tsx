@@ -13,6 +13,7 @@ const ClubsPage: React.FC = () => {
   const [clubList, setClubList] = useState<Club[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const { loading } = useSelector((state: RootState) => state.auth);
+  console.log(loading);
   const [error, setError] = useState(false);
 
   const Clubs = useSelector((state: RootState) => state.feed.Clubs);

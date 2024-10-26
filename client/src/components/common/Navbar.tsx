@@ -23,7 +23,7 @@ const Navbar: React.FC = () => {
     { name: "Home", href: "/" },
     { name: "Clubs", href: "/clubs" },
     { name: "Events", href: "/events" },
-    { name: "About", href: "#" },
+    { name: "CampusFeed", href: "/posts" },
   ];
 
   const handleLogout = () => {
@@ -170,7 +170,7 @@ const Navbar: React.FC = () => {
                     className="bg-slate-700  text-white py-2 px-4 rounded-lg hover:bg-slate-800 transition-colors duration-200 ease-in-out flex items-center justify-between w-full"
                   >
                     <BiSolidDashboard className="text-lg" />
-                    Admin Dashboard
+                    Dashboard
                   </button>
                 )}
                 <button

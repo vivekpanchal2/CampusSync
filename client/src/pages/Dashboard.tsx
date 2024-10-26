@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { Link, Outlet } from "react-router-dom";
 import { FaCalendarCheck, FaUserFriends, FaCalendarAlt } from "react-icons/fa"; // Icons
+import { IoCreateSharp } from "react-icons/io5";
+import { TfiMenu } from "react-icons/tfi";
 
 const Dashboard = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState<"enrolled" | "hosted" | "clubs">(
-    "enrolled"
-  );
+  const [activeTab, setActiveTab] = useState<
+    "enrolled" | "hosted" | "clubs" | "posts"
+  >("enrolled");
 
   return (
     <div className="mt-[4.5rem]">
@@ -15,7 +17,7 @@ const Dashboard = () => {
           className="bg-blue-600 text-white px-4 py-2 rounded-md"
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
         >
-          {isSidebarOpen ? "Close Menu" : "Open Menu"}
+          {isSidebarOpen ? <TfiMenu /> : <TfiMenu />}
         </button>
       </div>
 
@@ -74,6 +76,22 @@ const Dashboard = () => {
                 }}
               >
                 <FaUserFriends className="mr-2" /> Joined Clubs
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="posts"
+                className={`w-full flex items-center px-4 py-2 rounded-md transition-colors duration-300 ${
+                  activeTab === "posts"
+                    ? "bg-blue-600 text-white"
+                    : "text-gray-300 hover:bg-gray-700"
+                }`}
+                onClick={() => {
+                  setActiveTab("posts");
+                  setIsSidebarOpen(false);
+                }}
+              >
+                <IoCreateSharp className="mr-2" /> My Posts
               </Link>
             </li>
           </ul>
